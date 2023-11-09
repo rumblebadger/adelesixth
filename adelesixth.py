@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[147]:
+# In[121]:
 
 
 import numpy as np
 
 
-# In[148]:
+# In[122]:
 
 
-# burst_array = np.array([1, 0.28, 0.45, 0.2, 0.75, 0.18, 0.22, 0.2, 0.45, 0.25, 0.22, 0.18, 0.8, 0.8, 0.16, 1, 0.1, 0.67, 1, 0, 1])
 """
 skills_input is the main adjustable parameter in this script. To adjust for your purpose, for each skill, do the following:
 - adjust ba_percent to be the percent of total damage done by that skill. if you have a BA this can be read off from the BA.
@@ -49,8 +48,10 @@ skills_input = {
 
 """
 origin_percent is the expected ba_percent for level 1 origin skill. By default it is equal to infinity's ba_percent,
-which should be pretty accurate based off of kms BAs that I've seen, but you can manually adjust it if you wish. Note
-it's not included in the 'adds to 100' check described above and will get normalized in with everything else.
+which should be pretty accurate to a 3min rotation based off of kms BAs that I've seen, but you can manually adjust 
+it if you wish. For longer rotations (like 6min rotations), you can divide this value by 2, or maybe like 1.5-1.7 or
+so since practically you use maestro with more bursts than not. Note it's not included in the 'adds to 100' check 
+described above and will get normalized in with everything else.
 """
 origin_percent = skills_input['infinity']['ba_percent']
 
@@ -64,7 +65,7 @@ as it's impossible to do that many cleaves between enhanced cleaves.
 enhanced_cleave_frequency = 9.5 # enhanced cleave is one in every <value> cleaves
 
 
-# In[149]:
+# In[123]:
 
 
 skills_input_sum = np.sum([skill['ba_percent'] for skill in skills_input.values()])
@@ -74,7 +75,7 @@ if abs(skills_input_sum-100) > 0.1:
 #     print(f'Total BA percent: {skills_input_sum}')
 
 
-# In[150]:
+# In[124]:
 
 
 skills = []
@@ -85,12 +86,12 @@ for key in skills_input.keys():
     percents.append(skills_input[key]['ba_percent'])
     burst_array.append(skills_input[key]['burst_frac'])
 skills.append('maestro')
-percents.append(10.0)
+percents.append(origin_percent)
 burst_array.append(1)
 burst_array = np.array(burst_array)
 
 
-# In[151]:
+# In[125]:
 
 
 percents = np.array(percents)
@@ -98,7 +99,7 @@ normed_percents = percents/np.sum(percents)
 # print(len(skills), skills, normed_percents)
 
 
-# In[152]:
+# In[126]:
 
 
 origin_costs = [30, 35, 40, 45, 50, 55, 60, 65, 200, 80, 90, 100, 110, 120, 130, 140, 150, 160, 350, 170, 180, 190, 200, 210, 220, 230, 240, 250, 500]
@@ -106,13 +107,13 @@ fourth_costs = [50, 15, 18, 20, 23, 25, 28, 30, 33, 100, 40, 45, 50, 55, 60, 65,
 fifth_costs = [75, 23, 27, 30, 34, 38, 42, 45, 49, 150, 60, 68, 75, 83, 90, 98, 105, 113, 120, 263, 128, 135, 143, 150, 158, 165, 173, 180, 188, 375]
 
 
-# In[153]:
+# In[127]:
 
 
 # len(origin_costs), len(fourth_costs), len(fifth_costs)
 
 
-# In[154]:
+# In[128]:
 
 
 # burst_array = np.array([1, 0.28, 0.45, 0.2, 0.75, 0.18, 0.22, 0.2, 0.45, 0.25, 0.22, 0.18, 0.8, 0.8, 0.16, 1, 0.1, 0.67, 1, 0, 1])
@@ -126,7 +127,7 @@ def norm(current_percents):
     return current_percents/np.sum(current_percents)
 
 
-# In[155]:
+# In[129]:
 
 
 # boostable things: origin, infinity, legacy, ruin, storm, cleave
@@ -202,7 +203,7 @@ def fourth_boost(current_percents, fourth_level):
 # print(fourth_boost(normed_percents, 0))
 
 
-# In[156]:
+# In[130]:
 
 
 lookahead = 10
@@ -219,7 +220,7 @@ def find_next_boost(current_percents, current_levels, lookahead=lookahead):
         if i == 0:
             fd_gains[0] = origin_fd_increase
         origin_cost += origin_costs[current_levels[0]+i]
-        origin_efficiencies.append(origin_fd_increase/origin_cost)
+        origin_efficiencies.append((1+origin_fd_increase)**(1/origin_cost))
     efficiencies[0] = max(origin_efficiencies)
     
     for j, skill in enumerate(boostable_skills[1:4]):
@@ -231,7 +232,7 @@ def find_next_boost(current_percents, current_levels, lookahead=lookahead):
             if i == 0:
                 fd_gains[j+1] = skill_fd_increase
             skill_cost += fifth_costs[current_levels[j+1]+i]
-            skill_efficiencies.append(skill_fd_increase/skill_cost)
+            skill_efficiencies.append((1+skill_fd_increase)**(1/skill_cost))
         efficiencies[j+1] = max(skill_efficiencies)
     
     legacy_efficiencies = []
@@ -242,7 +243,7 @@ def find_next_boost(current_percents, current_levels, lookahead=lookahead):
         if i == 0:
             fd_gains[4] = legacy_fd_increase
         legacy_cost += fifth_costs[current_levels[4]+i]
-        legacy_efficiencies.append(legacy_fd_increase/legacy_cost)
+        legacy_efficiencies.append((1+legacy_fd_increase)**(1/legacy_cost))
     efficiencies[4] = max(legacy_efficiencies)
     
     cleave_efficiencies = []
@@ -255,7 +256,7 @@ def find_next_boost(current_percents, current_levels, lookahead=lookahead):
             fd_gains[5] = cleave_fd_increase
             extra_fd = dispatch_fd_increase
         cleave_cost += fourth_costs[current_levels[5]+i]
-        cleave_efficiencies.append(fourth_fd_increase/cleave_cost)
+        cleave_efficiencies.append((1+fourth_fd_increase)**(1/cleave_cost))
     efficiencies[5] = max(cleave_efficiencies)
     
     pick = np.argmax(efficiencies)
@@ -263,14 +264,14 @@ def find_next_boost(current_percents, current_levels, lookahead=lookahead):
     if pick != 5:
         extra_fd = 0
     
-    return pick, fd_gains[pick], extra_fd, efficiencies[pick]
+    return pick, fd_gains[pick], extra_fd, efficiencies[pick]-1
     
 origin_costs.extend(list(np.ones(lookahead+1)*1000))
 fifth_costs.extend(list(np.ones(lookahead+1)*1000))
 fourth_costs.extend(list(np.ones(lookahead+1)*1000))
 
 
-# In[157]:
+# In[131]:
 
 
 boostable_skills = ['maestro', 'infinity', 'storm', 'ruin', 'legacy', 'cleave']
@@ -279,7 +280,7 @@ current_percents = normed_percents
 # boostable_skills[1:4]
 
 
-# In[158]:
+# In[132]:
 
 
 print('skill\t\tlevel\t\tefficiency*\tfd gain')
@@ -308,7 +309,7 @@ while current_levels.min() < 30:
     
     current_percents = norm(current_percents)
     current_levels[arg_boost] += 1
-print('\n*efficiency is fd gain divided by fragment cost. Overall efficiency\nshould decrease as you move down the list. You may note a few times\nwhere this doesn\'t happens, specifically with legacy. This is because\nthe fd increase every 3 levels gets amoratized over the previous levels.\nSo you get situations where the efficiency increases as you get closer to\nthe breakpoint. This behavior is expected if slightly unintuitive.')
+print('\n*efficiency is (morally) fd gain divided by fragment cost. Overall efficiency\nshould decrease as you move down the list. You may note a few times\nwhere this doesn\'t happens, specifically with legacy. This is because\nthe fd increase every 3 levels gets amoratized over the previous levels.\nSo you get situations where the efficiency increases as you get closer to\nthe breakpoint. This behavior is expected if slightly unintuitive.')
 
 
 # In[ ]:
