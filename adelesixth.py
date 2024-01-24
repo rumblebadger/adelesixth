@@ -50,8 +50,8 @@ skills_input = {
 
 # # burst setup
 # skills_input = {
-#     'infinity': {'ba_percent': 18, 'burst_frac': 1}, # burst_frac - 1 always
-#     'decree': {'ba_percent': 12, 'burst_frac': 0.8}, # burst_frac - full rot: 0.28, culvert: 0.4, burst: 0.95
+#     'infinity': {'ba_percent': 25, 'burst_frac': 1}, # burst_frac - 1 always
+#     'decree': {'ba_percent': 16, 'burst_frac': 0.8}, # burst_frac - full rot: 0.28, culvert: 0.4, burst: 0.95
 #     'shardbreaker': {'ba_percent': 9, 'burst_frac': 0.9}, # burst_frac - full rot: 0.45, culvert: 0.5 with cd hat, 0.7 w/o, burst: 1
 #     'cleave': {'ba_percent': 7, 'burst_frac': 0.8}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
 #     'storm': {'ba_percent': 8, 'burst_frac': 1}, # burst_frac - full rot: 0.75, culvert: 0.75, burst: 1
@@ -102,7 +102,7 @@ enhanced_cleave_frequency = 9.5 # enhanced cleave is one in every <value> cleave
 
 skills_input_sum = np.sum([skill['ba_percent'] for skill in skills_input.values()])
 if abs(skills_input_sum-100) > 0.1:
-    print(f'Warning! skills_input_sum is {skills_input_sum} when it should be close to 100.0 (unless you know what you\'re doing')
+    print(f'Warning! skills_input_sum is {skills_input_sum} when it should be close to 100.0 (unless you know what you\'re doing)')
 # else:
 #     print(f'Total BA percent: {skills_input_sum}')
 
