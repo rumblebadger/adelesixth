@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[13]:
 
 
 import numpy as np
 
 
-# In[ ]:
+# In[14]:
 
 
-# burst_array = np.array([1, 0.28, 0.45, 0.2, 0.75, 0.18, 0.22, 0.2, 0.45, 0.25, 0.22, 0.18, 0.8, 0.8, 0.16, 1, 0.1, 0.67, 1, 0, 1])
 """
 skills_input is the main adjustable parameter in this script. To adjust for your purpose, for each skill, do the following:
 - adjust ba_percent to be the percent of total damage done by that skill. if you have a BA this can be read off from the BA.
@@ -24,6 +23,8 @@ Note that if your ba_percents don't add up to 100 (or close) it prints out a war
 normalized so they add to 100 no matter what. This can be handy if you want to fudge with some numbers without having to
 manually adjust the ba_percent for every skill, but it can lead to misleading results if done by mistake (hence the warning).
 """
+
+# general bossing setup
 skills_input = {
     'infinity': {'ba_percent': 16.59, 'burst_frac': 1}, # burst_frac - 1 always
     'decree': {'ba_percent': 16.38, 'burst_frac': 0.4}, # burst_frac - full rot: 0.28, culvert: 0.4, burst: 0.95
@@ -47,6 +48,30 @@ skills_input = {
     'grave': {'ba_percent': 0.12, 'burst_frac': 0}, # burst_frac - 0 always since you should mark before legacy
 }
 
+# # burst setup
+# skills_input = {
+#     'infinity': {'ba_percent': 18, 'burst_frac': 1}, # burst_frac - 1 always
+#     'decree': {'ba_percent': 12, 'burst_frac': 0.8}, # burst_frac - full rot: 0.28, culvert: 0.4, burst: 0.95
+#     'shardbreaker': {'ba_percent': 9, 'burst_frac': 0.9}, # burst_frac - full rot: 0.45, culvert: 0.5 with cd hat, 0.7 w/o, burst: 1
+#     'cleave': {'ba_percent': 7, 'burst_frac': 0.8}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
+#     'storm': {'ba_percent': 8, 'burst_frac': 1}, # burst_frac - full rot: 0.75, culvert: 0.75, burst: 1
+#     'forge': {'ba_percent': 4, 'burst_frac': 0.8}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
+#     'bloom': {'ba_percent': 6, 'burst_frac': 0.6}, # burst_frac - full rot: 0.22, culvert: 0.35, burst: 0.9
+#     'dispatch': {'ba_percent': 3, 'burst_frac': 0.5}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
+#     'ruin': {'ba_percent': 5, 'burst_frac': 1}, # burst_frac - full rot: 0.45, culvert: 0.5 with cd hat, 0.7 w/o, burst: 1
+#     'reign': {'ba_percent': 3, 'burst_frac': 0.8}, # burst_frac - full rot: 0.25, culvert: 0.35, burst: 0.9
+#     'summons': {'ba_percent': 3, 'burst_frac': 0.8}, # burst_frac - full rot: 0.22, culvert: 0.35, burst: 0.9
+#     'rush': {'ba_percent': 1, 'burst_frac': 1}, # burst_frac - full rot: 0.18, culvert: 0.2, burst: 1
+#     'arachnid': {'ba_percent': 0.5, 'burst_frac': 0.6}, # burst_frac - full rot: 0.9, culvert: 0.5, burst: 0.9
+#     'solar crest': {'ba_percent': 0.5, 'burst_frac': 0.6}, # burst_frac - full rot: 0.9, culvert: 0.5, burst: 0.9
+#     'weapon aura': {'ba_percent': 1, 'burst_frac': 0.8}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.9
+#     'legacy': {'ba_percent': 1.5, 'burst_frac': 1}, # burst_frac - 1 always
+#     'plummet': {'ba_percent': 0, 'burst_frac': 0}, # burst_frac - full rot: 0.1, culvert: 0.1, burst: 0.1
+#     'conversion overdrive': {'ba_percent': 1, 'burst_frac': 0.8}, # burst_frac - full rot: 0.67, culvert: 0.67, burst: 0.9
+#     'blade torrent': {'ba_percent': 0.7, 'burst_frac': 1}, # burst_frac - 1 always
+#     'grave': {'ba_percent': 0.1, 'burst_frac': 0}, # burst_frac - 0 always since you should mark before legacy
+# }
+
 """
 origin_percent is the expected ba_percent for level 1 origin skill. By default it is equal to infinity's ba_percent,
 which should be pretty accurate to a 3min rotation based off of kms BAs that I've seen, but you can manually adjust 
@@ -54,13 +79,13 @@ it if you wish. For longer rotations (like 6min rotations), you can divide this 
 so since practically you use maestro with more bursts than not. Note it's not included in the 'adds to 100' check 
 described above and will get normalized in with everything else.
 """
-origin_percent = skills_input['infinity']['ba_percent']/1.6
+origin_percent = skills_input['infinity']['ba_percent']/1.5
 
 """
 limiting_resource is the choice of what is limiting 6th prog - either fragments or the sol erda. options are either
 'fragments' or 'erda'.
 """
-limiting_resource = 'erda' # 'fragments' or 'erda'
+limiting_resource = 'fragments' # 'fragments' or 'erda'
 
 """
 okay this like doesn't really affect much... but i'm putting it in here for completeness - i estimated the ratio
@@ -72,7 +97,7 @@ as it's impossible to do that many cleaves between enhanced cleaves.
 enhanced_cleave_frequency = 9.5 # enhanced cleave is one in every <value> cleaves
 
 
-# In[ ]:
+# In[15]:
 
 
 skills_input_sum = np.sum([skill['ba_percent'] for skill in skills_input.values()])
@@ -82,7 +107,7 @@ if abs(skills_input_sum-100) > 0.1:
 #     print(f'Total BA percent: {skills_input_sum}')
 
 
-# In[ ]:
+# In[16]:
 
 
 skills = []
@@ -98,7 +123,7 @@ burst_array.append(1)
 burst_array = np.array(burst_array)
 
 
-# In[ ]:
+# In[17]:
 
 
 percents = np.array(percents)
@@ -106,7 +131,7 @@ normed_percents = percents/np.sum(percents)
 # print(len(skills), skills, normed_percents)
 
 
-# In[ ]:
+# In[18]:
 
 
 if limiting_resource == 'fragments':
@@ -121,13 +146,13 @@ else:
     print('Typo in limiting_resource. Needs to be \'fragments\' or \'erda\'')
 
 
-# In[ ]:
+# In[19]:
 
 
 len(origin_costs), len(fourth_costs), len(fifth_costs)
 
 
-# In[ ]:
+# In[20]:
 
 
 # burst_array = np.array([1, 0.28, 0.45, 0.2, 0.75, 0.18, 0.22, 0.2, 0.45, 0.25, 0.22, 0.18, 0.8, 0.8, 0.16, 1, 0.1, 0.67, 1, 0, 1])
@@ -141,7 +166,7 @@ def norm(current_percents):
     return current_percents/np.sum(current_percents)
 
 
-# In[ ]:
+# In[21]:
 
 
 # boostable things: origin, infinity, legacy, ruin, storm, cleave
@@ -180,6 +205,12 @@ def origin_boost(current_percents, origin_level):
         return 0
     origin_fd_gain = origin_skill_percent[origin_level]/origin_skill_percent[origin_level-1]
     current_origin_percent = current_percents[skills.index('maestro')]
+    if origin_level == 9:
+        origin_fd_gain += 0.005  # accounting for 20% ied addition
+    if origin_level == 19:
+        origin_fd_gain += 0.02  # accounting for 20% boss addition
+    if origin_level == 29:
+        origin_fd_gain += 0.035  # accounting for 30% boss and ied addition
     return current_origin_percent*origin_fd_gain-current_origin_percent
 # print(origin_boost(normed_percents, 29))
 
@@ -209,6 +240,8 @@ def fourth_boost(current_percents, fourth_level):
         cleave_fd_bonus = cleave_enhancement[fourth_level]/cleave_enhancement[fourth_level-1]
         enhanced_cleave_fd_bonus = enhanced_cleave_enhancement[fourth_level]/enhanced_cleave_enhancement[fourth_level-1]
         dispatch_fd_bonus = dispatch_enhancement[fourth_level]/dispatch_enhancement[fourth_level-1]
+        if fourth_level == 15-1 or fourth_level == 30-1:
+            dispatch_fd_bonus += 0.045 # adding to account for aetherial arms cd reduction - really should affect more but fuck it
         
     cleave_total_fd = 1/enhanced_cleave_frequency*enhanced_cleave_fd_bonus + (enhanced_cleave_frequency-1)/enhanced_cleave_frequency*cleave_fd_bonus
     current_cleave_percent = current_percents[skills.index('cleave')]
@@ -217,7 +250,7 @@ def fourth_boost(current_percents, fourth_level):
 # print(fourth_boost(normed_percents, 0))
 
 
-# In[ ]:
+# In[22]:
 
 
 lookahead = 10
@@ -294,7 +327,7 @@ fifth_costs.extend(list(np.ones(lookahead+1)*1000))
 fourth_costs.extend(list(np.ones(lookahead+1)*1000))
 
 
-# In[ ]:
+# In[23]:
 
 
 boostable_skills = ['maestro', 'infinity', 'storm', 'ruin', 'legacy', 'cleave']
@@ -303,7 +336,7 @@ current_percents = normed_percents
 # boostable_skills[1:4]
 
 
-# In[ ]:
+# In[24]:
 
 
 print(f'skill\t\tlevel\t\tefficiency*\tfd gain\t\ttotal fd\ttotal {limiting_resource} cost')
@@ -342,7 +375,7 @@ while current_levels.min() < 30:
     
     current_percents = norm(current_percents)
     current_levels[arg_boost] += 1
-print('\n*efficiency is (morally) fd gain divided by fragment cost. Overall efficiency\nshould decrease as you move down the list. You may note a few times\nwhere this doesn\'t happens, specifically with legacy. This is because\nthe fd increase every 3 levels gets amoratized over the previous levels.\nSo you get situations where the efficiency increases as you get closer to\nthe breakpoint. This behavior is expected if slightly unintuitive.')
+print('\n*efficiency is (morally) fd gain divided by fragment cost. Overall efficiency\nshould decrease as you move down the list. You may note a few times\nwhere this doesn\'t happens, most noticeably with legacy. This is because\nthe fd increase every 3 levels gets amoratized over the previous levels.\nSo you get situations where the efficiency increases as you get closer to\nthe breakpoint. This behavior is expected if slightly unintuitive.')
 
 
 # In[ ]:
