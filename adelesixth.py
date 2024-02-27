@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[13]:
+# In[1]:
 
 
 import numpy as np
 
 
-# In[14]:
+# In[2]:
 
 
 """
@@ -24,7 +24,7 @@ normalized so they add to 100 no matter what. This can be handy if you want to f
 manually adjust the ba_percent for every skill, but it can lead to misleading results if done by mistake (hence the warning).
 """
 
-# general bossing setup
+# # general bossing setup
 skills_input = {
     'infinity': {'ba_percent': 16.59, 'burst_frac': 1}, # burst_frac - 1 always
     'decree': {'ba_percent': 16.38, 'burst_frac': 0.4}, # burst_frac - full rot: 0.28, culvert: 0.4, burst: 0.95
@@ -51,23 +51,23 @@ skills_input = {
 # # burst setup
 # skills_input = {
 #     'infinity': {'ba_percent': 25, 'burst_frac': 1}, # burst_frac - 1 always
-#     'decree': {'ba_percent': 16, 'burst_frac': 0.8}, # burst_frac - full rot: 0.28, culvert: 0.4, burst: 0.95
-#     'shardbreaker': {'ba_percent': 9, 'burst_frac': 0.9}, # burst_frac - full rot: 0.45, culvert: 0.5 with cd hat, 0.7 w/o, burst: 1
-#     'cleave': {'ba_percent': 7, 'burst_frac': 0.8}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
+#     'decree': {'ba_percent': 16, 'burst_frac': 0.95}, # burst_frac - full rot: 0.28, culvert: 0.4, burst: 0.95
+#     'shardbreaker': {'ba_percent': 9, 'burst_frac': 1}, # burst_frac - full rot: 0.45, culvert: 0.5 with cd hat, 0.7 w/o, burst: 1
+#     'cleave': {'ba_percent': 7, 'burst_frac': 0.95}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
 #     'storm': {'ba_percent': 8, 'burst_frac': 1}, # burst_frac - full rot: 0.75, culvert: 0.75, burst: 1
-#     'forge': {'ba_percent': 4, 'burst_frac': 0.8}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
-#     'bloom': {'ba_percent': 6, 'burst_frac': 0.6}, # burst_frac - full rot: 0.22, culvert: 0.35, burst: 0.9
-#     'dispatch': {'ba_percent': 3, 'burst_frac': 0.5}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
+#     'forge': {'ba_percent': 4, 'burst_frac': 0.95}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
+#     'bloom': {'ba_percent': 6, 'burst_frac': 0.9}, # burst_frac - full rot: 0.22, culvert: 0.35, burst: 0.9
+#     'dispatch': {'ba_percent': 3, 'burst_frac': 0.95}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.95
 #     'ruin': {'ba_percent': 5, 'burst_frac': 1}, # burst_frac - full rot: 0.45, culvert: 0.5 with cd hat, 0.7 w/o, burst: 1
-#     'reign': {'ba_percent': 3, 'burst_frac': 0.8}, # burst_frac - full rot: 0.25, culvert: 0.35, burst: 0.9
-#     'summons': {'ba_percent': 3, 'burst_frac': 0.8}, # burst_frac - full rot: 0.22, culvert: 0.35, burst: 0.9
+#     'reign': {'ba_percent': 3, 'burst_frac': 0.9}, # burst_frac - full rot: 0.25, culvert: 0.35, burst: 0.9
+#     'summons': {'ba_percent': 3, 'burst_frac': 0.9}, # burst_frac - full rot: 0.22, culvert: 0.35, burst: 0.9
 #     'rush': {'ba_percent': 1, 'burst_frac': 1}, # burst_frac - full rot: 0.18, culvert: 0.2, burst: 1
-#     'arachnid': {'ba_percent': 0.5, 'burst_frac': 0.6}, # burst_frac - full rot: 0.9, culvert: 0.5, burst: 0.9
-#     'solar crest': {'ba_percent': 0.5, 'burst_frac': 0.6}, # burst_frac - full rot: 0.9, culvert: 0.5, burst: 0.9
-#     'weapon aura': {'ba_percent': 1, 'burst_frac': 0.8}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.9
+#     'arachnid': {'ba_percent': 0.5, 'burst_frac': 0.9}, # burst_frac - full rot: 0.9, culvert: 0.5, burst: 0.9
+#     'solar crest': {'ba_percent': 0.5, 'burst_frac': 0.9}, # burst_frac - full rot: 0.9, culvert: 0.5, burst: 0.9
+#     'weapon aura': {'ba_percent': 1, 'burst_frac': 0.9}, # burst_frac - full rot: 0.2, culvert: 0.3, burst: 0.9
 #     'legacy': {'ba_percent': 1.5, 'burst_frac': 1}, # burst_frac - 1 always
 #     'plummet': {'ba_percent': 0, 'burst_frac': 0}, # burst_frac - full rot: 0.1, culvert: 0.1, burst: 0.1
-#     'conversion overdrive': {'ba_percent': 1, 'burst_frac': 0.8}, # burst_frac - full rot: 0.67, culvert: 0.67, burst: 0.9
+#     'conversion overdrive': {'ba_percent': 1, 'burst_frac': 0.9}, # burst_frac - full rot: 0.67, culvert: 0.67, burst: 0.9
 #     'blade torrent': {'ba_percent': 0.7, 'burst_frac': 1}, # burst_frac - 1 always
 #     'grave': {'ba_percent': 0.1, 'burst_frac': 0}, # burst_frac - 0 always since you should mark before legacy
 # }
@@ -79,7 +79,7 @@ it if you wish. For longer rotations (like 6min rotations), you can divide this 
 so since practically you use maestro with more bursts than not. Note it's not included in the 'adds to 100' check 
 described above and will get normalized in with everything else.
 """
-origin_percent = skills_input['infinity']['ba_percent']/1.5
+origin_percent = skills_input['infinity']['ba_percent']/1.5  # if optimizing for culvert, don't divide by 1.5, just leave as 1
 
 """
 limiting_resource is the choice of what is limiting 6th prog - either fragments or the sol erda. options are either
@@ -97,7 +97,7 @@ as it's impossible to do that many cleaves between enhanced cleaves.
 enhanced_cleave_frequency = 9.5 # enhanced cleave is one in every <value> cleaves
 
 
-# In[15]:
+# In[3]:
 
 
 skills_input_sum = np.sum([skill['ba_percent'] for skill in skills_input.values()])
@@ -107,7 +107,7 @@ if abs(skills_input_sum-100) > 0.1:
 #     print(f'Total BA percent: {skills_input_sum}')
 
 
-# In[16]:
+# In[4]:
 
 
 skills = []
@@ -123,7 +123,7 @@ burst_array.append(1)
 burst_array = np.array(burst_array)
 
 
-# In[17]:
+# In[5]:
 
 
 percents = np.array(percents)
@@ -131,7 +131,7 @@ normed_percents = percents/np.sum(percents)
 # print(len(skills), skills, normed_percents)
 
 
-# In[18]:
+# In[6]:
 
 
 if limiting_resource == 'fragments':
@@ -146,13 +146,13 @@ else:
     print('Typo in limiting_resource. Needs to be \'fragments\' or \'erda\'')
 
 
-# In[19]:
+# In[7]:
 
 
 len(origin_costs), len(fourth_costs), len(fifth_costs)
 
 
-# In[20]:
+# In[8]:
 
 
 # burst_array = np.array([1, 0.28, 0.45, 0.2, 0.75, 0.18, 0.22, 0.2, 0.45, 0.25, 0.22, 0.18, 0.8, 0.8, 0.16, 1, 0.1, 0.67, 1, 0, 1])
@@ -166,10 +166,10 @@ def norm(current_percents):
     return current_percents/np.sum(current_percents)
 
 
-# In[21]:
+# In[9]:
 
 
-# boostable things: origin, infinity, legacy, ruin, storm, cleave
+# boostable things: origin, infinity, legacy, ruin, storm, cleave, decree
 
 fifth_enhancements = [11, 12, 13, 14, 15, 16, 17, 18, 19, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 60]
 origin_skill_percent = [3300*60+3900*140+skill_level*(110*60+130*140) for skill_level in range(1, 31)]
@@ -177,6 +177,7 @@ legacy_enhancement = [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7
 cleave_enhancement = [(390+skill_level*12)*6 for skill_level in range(1, 31)]
 enhanced_cleave_enhancement = [(300 + skill_level*9)*7*3 for skill_level in range(1, 31)]
 dispatch_enhancement = [(480 + skill_level*8)*15 for skill_level in range(1, 31)]
+decree_enhancement = [(380+skill_level*14)*2 for skill_level in range(1,31)]
 
 # def infinity_boost(current_percents, infinity_level):
 #     if infinity_level >= 30:
@@ -229,35 +230,54 @@ def legacy_boost(current_percents, legacy_level):
     return burst_fd_increase+actual_legacy_fd_gain
 # print(legacy_boost(normed_percents, 0))
 
-def fourth_boost(current_percents, fourth_level):
-    if fourth_level >= 30:
+def cleave_boost(current_percents, cleave_level):
+    if cleave_level >= 30:
         return 0, 0
-    elif fourth_level == 0:
-        cleave_fd_bonus = cleave_enhancement[fourth_level]/(375*6)
-        enhanced_cleave_fd_bonus = enhanced_cleave_enhancement[fourth_level]/(375*6)
-        dispatch_fd_bonus = dispatch_enhancement[fourth_level]/(450*3*5)
+    elif cleave_level == 0:
+        cleave_fd_bonus = cleave_enhancement[cleave_level]/(378*6)
+        enhanced_cleave_fd_bonus = enhanced_cleave_enhancement[cleave_level]/(378*6)
+        dispatch_fd_bonus = dispatch_enhancement[cleave_level]/(453*3*5)
     else:
-        cleave_fd_bonus = cleave_enhancement[fourth_level]/cleave_enhancement[fourth_level-1]
-        enhanced_cleave_fd_bonus = enhanced_cleave_enhancement[fourth_level]/enhanced_cleave_enhancement[fourth_level-1]
-        dispatch_fd_bonus = dispatch_enhancement[fourth_level]/dispatch_enhancement[fourth_level-1]
-        if fourth_level == 15-1 or fourth_level == 30-1:
+        cleave_fd_bonus = cleave_enhancement[cleave_level]/cleave_enhancement[cleave_level-1]
+        enhanced_cleave_fd_bonus = enhanced_cleave_enhancement[cleave_level]/enhanced_cleave_enhancement[cleave_level-1]
+        dispatch_fd_bonus = dispatch_enhancement[cleave_level]/dispatch_enhancement[cleave_level-1]
+        if cleave_level == 15-1 or cleave_level == 30-1:
             dispatch_fd_bonus += 0.045 # adding to account for aetherial arms cd reduction - really should affect more but fuck it
         
     cleave_total_fd = 1/enhanced_cleave_frequency*enhanced_cleave_fd_bonus + (enhanced_cleave_frequency-1)/enhanced_cleave_frequency*cleave_fd_bonus
     current_cleave_percent = current_percents[skills.index('cleave')]
     current_dispath_percent = current_percents[skills.index('dispatch')]
     return current_cleave_percent*cleave_total_fd-current_cleave_percent, current_dispath_percent*dispatch_fd_bonus-current_dispath_percent
-# print(fourth_boost(normed_percents, 0))
+# print(cleave_boost(normed_percents, 0))
+
+def decree_boost(current_percents, decree_level):
+    if decree_level >= 30:
+        return 0
+    elif decree_level == 0:
+        decree_fd_bonus = decree_enhancement[decree_level]/(363*2)
+    else:
+        decree_fd_bonus = decree_enhancement[decree_level]/decree_enhancement[decree_level-1]
+    current_decree_percent = current_percents[skills.index('decree')]
+    return current_decree_percent*decree_fd_bonus-current_decree_percent
 
 
-# In[22]:
+# In[10]:
+
+
+boostable_skills = ['maestro', 'infinity', 'storm', 'ruin', 'legacy', 'cleave', 'decree']
+current_levels = np.array([1, 0, 0, 0, 0, 0, 0], dtype=int)
+current_percents = normed_percents
+# boostable_skills[1:4]
+
+
+# In[11]:
 
 
 lookahead = 10
 def find_next_boost(current_percents, current_levels, lookahead=lookahead):
-    efficiencies = np.zeros(6)
-    fd_gains = np.zeros(6)
-    costs = np.zeros(6)
+    efficiencies = np.zeros(len(boostable_skills))
+    fd_gains = np.zeros(len(boostable_skills))
+    costs = np.zeros(len(boostable_skills))
     extra_fd = 0 # used when dispatch matters
     
     origin_efficiencies = []
@@ -301,19 +321,32 @@ def find_next_boost(current_percents, current_levels, lookahead=lookahead):
     efficiencies[4] = max(legacy_efficiencies)
     
     cleave_efficiencies = []
-    fourth_fd_increase = 0
+    cleavedispatch_fd_increase = 0
     cleave_cost = 0
     for i in range(lookahead):
-        cleave_fd_increase, dispatch_fd_increase = fourth_boost(current_percents, current_levels[5]+i)
-        fourth_fd_increase += cleave_fd_increase + dispatch_fd_increase
+        cleave_fd_increase, dispatch_fd_increase = cleave_boost(current_percents, current_levels[5]+i)
+        cleavedispatch_fd_increase += cleave_fd_increase + dispatch_fd_increase
         if i == 0:
             fd_gains[5] = cleave_fd_increase
             extra_fd = dispatch_fd_increase
         cleave_cost += fourth_costs[current_levels[5]+i]
         if i == 0:
             costs[5] = cleave_cost
-        cleave_efficiencies.append((1+fourth_fd_increase)**(1/cleave_cost))
+        cleave_efficiencies.append((1+cleavedispatch_fd_increase)**(1/cleave_cost))
     efficiencies[5] = max(cleave_efficiencies)
+    
+    decree_efficiencies = []
+    decree_fd_increase = 0
+    decree_cost = 0
+    for i in range(lookahead):
+        decree_fd_increase += decree_boost(current_percents, current_levels[6]+i)
+        if i == 0:
+            fd_gains[6] = decree_fd_increase
+        decree_cost += fourth_costs[current_levels[6]+i]
+        if i == 0:
+            costs[6] = decree_cost
+        decree_efficiencies.append((1+decree_fd_increase)**(1/decree_cost))
+    efficiencies[6] = max(decree_efficiencies)
     
     pick = np.argmax(efficiencies)
     
@@ -327,16 +360,7 @@ fifth_costs.extend(list(np.ones(lookahead+1)*1000))
 fourth_costs.extend(list(np.ones(lookahead+1)*1000))
 
 
-# In[23]:
-
-
-boostable_skills = ['maestro', 'infinity', 'storm', 'ruin', 'legacy', 'cleave']
-current_levels = np.array([1, 0, 0, 0, 0, 0], dtype=int)
-current_percents = normed_percents
-# boostable_skills[1:4]
-
-
-# In[24]:
+# In[12]:
 
 
 print(f'skill\t\tlevel\t\tefficiency*\tfd gain\t\ttotal fd\ttotal {limiting_resource} cost')
@@ -352,7 +376,7 @@ while current_levels.min() < 30:
     for i in range(9-len(skill_name_print)):
         skill_name_print += ' '
     
-    print(f'{skill_name_print}\t{current_levels[arg_boost]}->{current_levels[arg_boost]+1}\t\t{efficiency*100:0.6f}\t{fd_gain*100+extra_fd*100:0.3f}\t\t{running_fd_gain*100-100:0.3f}\t\t{running_cost}')
+    print(f'{skill_name_print}\t{current_levels[arg_boost]}->{current_levels[arg_boost]+1}\t\t{efficiency*100:0.6f}\t{fd_gain*100+extra_fd*100:0.3f}\t\t{running_fd_gain*100-100:0.3f}\t\t{int(running_cost)}')
     
     if boostable_skills[arg_boost] == 'cleave':
 #         print(f'{boostable_skills[arg_boost]}\t\t{current_levels[arg_boost]}->{current_levels[arg_boost]+1}\t\t{efficiency*100:0.6f}\t{fd_gain*100+extra_fd*100:0.3f}\t({fd_gain*100:0.3f} from cleave, {extra_fd*100:0.3f} from dispatch)')
@@ -375,7 +399,7 @@ while current_levels.min() < 30:
     
     current_percents = norm(current_percents)
     current_levels[arg_boost] += 1
-print('\n*efficiency is (morally) fd gain divided by fragment cost. Overall efficiency\nshould decrease as you move down the list. You may note a few times\nwhere this doesn\'t happens, most noticeably with legacy. This is because\nthe fd increase every 3 levels gets amoratized over the previous levels.\nSo you get situations where the efficiency increases as you get closer to\nthe breakpoint. This behavior is expected if slightly unintuitive.')
+print('\n*efficiency is (morally) fd gain divided by fragment cost. Overall efficiency\nshould generally decrease as you move down the list. You may note a few times\nwhere this doesn\'t happens, most noticeably with legacy. This is because\nfuture fd gains (e.g. 1 fd on burst from legacy) get amoratized over the\nprevious levels. So you get situations where the efficiency increases as you\nget closer to the breakpoint. This behavior is expected if slightly unintuitive.')
 
 
 # In[ ]:
