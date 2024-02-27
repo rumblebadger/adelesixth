@@ -1,9 +1,15 @@
 # adelesixth
 
-## To users who know what they're doing with python:
+## Leveling order
+If you just want the leveling order, open the .txt files above called "adele 6th leveling order general.txt" or "adele 6th leveling order burst.txt". The burst one is very burst focused - think kalos and trying to do all damage in ~40s. General is more general purpose bossing (but still leans more burst focused than a full rotation).
+
+## Running the code
+You can mess with parameters to get a more custom leveling order if you want. Unfortunately the way I wrote it requires using pre-6th BAs or estimates, so it's hard to mess with it too much now without a significant code update. Instructions on running it are below.
+
+### To users who know what they're doing with python:
 Open the code and edit skills_input (and a few other optional parameters near the top of the file if you so choose) and then run the script. It requires numpy, so pip install that if you don't have it already.
 
-## To users who don't know what they're doing with python:
+### To users who don't know what they're doing with python:
 I'll be writing this like you're using a windows machine because if you're seeing this you probably play maplestory and are on a windows machine. Below, whenever I say type 'something like this', just type what is between the single quotes - don't include the single quotes themselves.
 
 1) You will have to have python installed. Go do that. Once you've done that, open a terminal (open the start menu, type 'cmd', then hit enter) and type 'python --version'. If you get an error you don't have python in your path, and you'll need to google how to fix that.
