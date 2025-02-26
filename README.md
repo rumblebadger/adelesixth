@@ -1,7 +1,7 @@
 # adelesixth
 
 ## Leveling order
-If you just want the leveling order, open the .txt files above called "adele 6th leveling order general.txt" or "adele 6th leveling order burst.txt". The burst one is very burst focused - think kalos and trying to do all damage in ~40s. General is more general purpose bossing (but still leans more burst focused than a full rotation).
+If you just want the leveling order, open the .txt files above. There is a recommended order and a burst optimized order. I recommend the recommended order (it is still more burst focused than a full rotation).
 
 ## Running the code
 You can mess with parameters to get a more custom leveling order if you want. Unfortunately the way I wrote it requires using pre-6th BAs or estimates, so it's hard to mess with it too much now without a significant code update. Instructions on running it are below.
